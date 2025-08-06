@@ -1,21 +1,47 @@
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
+import { useSelector } from '../../services/store';
+import { fetchIngredients } from '../../services/slices/ingredients';
+import { useDispatch } from '../../services/store';
+import { getOrderByNumberApi } from '../../utils/burger-api';
+import { useState } from 'react';
+import { TOrder } from '../../utils/types';
 
 export const OrderInfo: FC = () => {
-  /** TODO: взять переменные orderData и ingredients из стора */
-  const orderData = {
-    createdAt: '',
-    ingredients: [],
-    _id: '',
-    status: '',
-    name: '',
-    updatedAt: 'string',
-    number: 0
-  };
+  const { number } = useParams();
+  const dispatch = useDispatch();
+  const { ingredients, loading: ingredientsLoading } = useSelector(
+    (state) => state.ingredients
+  );
+  const [orderData, setOrderData] = useState<TOrder | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const ingredients: TIngredient[] = [];
+  useEffect(() => {
+    if (ingredients.length === 0) {
+      dispatch(fetchIngredients());
+    }
+  }, [dispatch, ingredients.length]);
+
+  useEffect(() => {
+    if (number) {
+      setLoading(true);
+      getOrderByNumberApi(Number(number))
+        .then((response) => {
+          if (response.success && response.orders.length > 0) {
+            setOrderData(response.orders[0]);
+          }
+        })
+        .catch((error) => {
+          console.error('Ошибка загрузки заказа:', error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [number]);
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
@@ -59,7 +85,7 @@ export const OrderInfo: FC = () => {
     };
   }, [orderData, ingredients]);
 
-  if (!orderInfo) {
+  if (loading || ingredientsLoading || !orderInfo) {
     return <Preloader />;
   }
 
