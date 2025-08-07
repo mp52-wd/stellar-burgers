@@ -1,17 +1,36 @@
 import { ProfileOrdersUI } from '@ui-pages';
+import { Preloader } from '@ui';
 import { TOrder } from '@utils-types';
 import { FC, useEffect } from 'react';
 import { useSelector } from '../../services/store';
 import { useDispatch } from '../../services/store';
-import { fetchOrders } from '../../services/slices/orders';
+import {
+  fetchOrders,
+  ordersSelector,
+  ordersLoadingSelector,
+  ordersErrorSelector
+} from '../../services/slices/orders';
 
 export const ProfileOrders: FC = () => {
   const dispatch = useDispatch();
-  const { orders, loading } = useSelector((state) => state.orders);
+  const orders = useSelector(ordersSelector);
+  const loading = useSelector(ordersLoadingSelector);
+  const error = useSelector(ordersErrorSelector);
+  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
 
   useEffect(() => {
-    dispatch(fetchOrders());
-  }, [dispatch]);
+    if (isAuthenticated) {
+      dispatch(fetchOrders());
+    }
+  }, [dispatch, isAuthenticated]);
 
-  return <ProfileOrdersUI orders={orders} />;
+  if (!isAuthenticated) {
+    return <div>Необходимо авторизоваться для просмотра заказов</div>;
+  }
+
+  if (loading) {
+    return <Preloader />;
+  }
+
+  return <ProfileOrdersUI orders={orders || []} />;
 };

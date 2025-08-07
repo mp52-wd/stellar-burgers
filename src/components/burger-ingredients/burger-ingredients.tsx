@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, FC } from 'react';
+import { useState, useRef, useEffect, FC, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { TIngredient, TTabMode } from '@utils-types';
 import { BurgerIngredientsUI } from '../ui/burger-ingredients';
@@ -6,12 +6,40 @@ import { useSelector } from '../../services/store';
 
 export const BurgerIngredients: FC = () => {
   const ingredients = useSelector((state) => state.ingredients.ingredients);
-
-  const buns = ingredients.filter((item: TIngredient) => item.type === 'bun');
-  const mains = ingredients.filter((item: TIngredient) => item.type === 'main');
-  const sauces = ingredients.filter(
-    (item: TIngredient) => item.type === 'sauce'
+  const constructorIngredients = useSelector(
+    (state) => state.burgerConstructor.ingredients
   );
+  const constructorBun = useSelector((state) => state.burgerConstructor.bun);
+
+  const buns = useMemo(
+    () => ingredients.filter((item: TIngredient) => item.type === 'bun'),
+    [ingredients]
+  );
+  const mains = useMemo(
+    () => ingredients.filter((item: TIngredient) => item.type === 'main'),
+    [ingredients]
+  );
+  const sauces = useMemo(
+    () => ingredients.filter((item: TIngredient) => item.type === 'sauce'),
+    [ingredients]
+  );
+
+  // Подсчет количества ингредиентов в конструкторе
+  const ingredientsCounters = useMemo(() => {
+    const counters: Record<string, number> = {};
+
+    // Подсчитываем начинки и соусы
+    constructorIngredients.forEach((ingredient: any) => {
+      counters[ingredient._id] = (counters[ingredient._id] || 0) + 1;
+    });
+
+    // Подсчитываем булку
+    if (constructorBun) {
+      counters[constructorBun._id] = 2; // Булка всегда считается как 2
+    }
+
+    return counters;
+  }, [constructorIngredients, constructorBun]);
 
   const [currentTab, setCurrentTab] = useState<TTabMode>('bun');
   const titleBunRef = useRef<HTMLHeadingElement>(null);
@@ -63,6 +91,7 @@ export const BurgerIngredients: FC = () => {
       mainsRef={mainsRef}
       saucesRef={saucesRef}
       onTabClick={onTabClick}
+      ingredientsCounters={ingredientsCounters}
     />
   );
 };

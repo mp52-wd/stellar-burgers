@@ -14,10 +14,7 @@ const initialState: IFeedsState = {
   error: null
 };
 
-export const fetchFeeds = createAsyncThunk(
-  'feeds/fetchFeeds',
-  async () => await getFeedsApi()
-);
+export const fetchFeeds = createAsyncThunk('feeds/fetchFeeds', getFeedsApi);
 
 export const feedsSlice = createSlice({
   name: 'feeds',
@@ -41,3 +38,11 @@ export const feedsSlice = createSlice({
 });
 
 export default feedsSlice.reducer;
+
+// Селекторы
+export const feedsSelector = (state: { feeds: IFeedsState }) =>
+  state.feeds.feeds;
+export const feedsLoadingSelector = (state: { feeds: IFeedsState }) =>
+  state.feeds.loading;
+export const feedsErrorSelector = (state: { feeds: IFeedsState }) =>
+  state.feeds.error;

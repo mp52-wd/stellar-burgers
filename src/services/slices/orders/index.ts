@@ -14,10 +14,10 @@ const initialState: IOrdersState = {
   error: null
 };
 
-export const fetchOrders = createAsyncThunk(
-  'orders/fetchOrders',
-  async () => await getOrdersApi()
-);
+export const fetchOrders = createAsyncThunk('orders/fetchOrders', async () => {
+  const orders = await getOrdersApi();
+  return orders;
+});
 
 export const ordersSlice = createSlice({
   name: 'orders',
@@ -41,3 +41,11 @@ export const ordersSlice = createSlice({
 });
 
 export default ordersSlice.reducer;
+
+// Селекторы
+export const ordersSelector = (state: { orders: IOrdersState }) =>
+  state.orders.orders;
+export const ordersLoadingSelector = (state: { orders: IOrdersState }) =>
+  state.orders.loading;
+export const ordersErrorSelector = (state: { orders: IOrdersState }) =>
+  state.orders.error;

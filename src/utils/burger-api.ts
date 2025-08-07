@@ -81,23 +81,44 @@ export const getIngredientsApi = () =>
 
 export const getFeedsApi = () =>
   fetch(`${URL}/orders/all`)
-    .then((res) => checkResponse<TFeedsResponse>(res))
+    .then((res) => {
+      console.log('getFeedsApi response:', res);
+      return checkResponse<TFeedsResponse>(res);
+    })
     .then((data) => {
+      console.log('getFeedsApi data:', data);
+      console.log('getFeedsApi data type:', typeof data);
+      console.log('getFeedsApi data keys:', Object.keys(data || {}));
       if (data?.success) return data;
       return Promise.reject(data);
+    })
+    .catch((error) => {
+      console.error('getFeedsApi error:', error);
+      return Promise.reject(error);
     });
 
-export const getOrdersApi = () =>
-  fetchWithRefresh<TFeedsResponse>(`${URL}/orders`, {
+export const getOrdersApi = () => {
+  const token = getCookie('accessToken');
+  console.log('getOrdersApi token:', token);
+  return fetchWithRefresh<TFeedsResponse>(`${URL}/orders`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json;charset=utf-8',
-      authorization: getCookie('accessToken')
+      authorization: token
     } as HeadersInit
-  }).then((data) => {
-    if (data?.success) return data.orders;
-    return Promise.reject(data);
-  });
+  })
+    .then((data) => {
+      console.log('getOrdersApi data:', data);
+      console.log('getOrdersApi data type:', typeof data);
+      console.log('getOrdersApi data keys:', Object.keys(data || {}));
+      if (data?.success) return data.orders;
+      return Promise.reject(data);
+    })
+    .catch((error) => {
+      console.error('getOrdersApi error:', error);
+      return Promise.reject(error);
+    });
+};
 
 type TNewOrderResponse = TServerResponse<{
   order: TOrder;

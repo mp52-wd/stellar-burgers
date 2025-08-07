@@ -11,12 +11,7 @@ export const BurgerIngredient: FC<TBurgerIngredientProps> = memo(
     const dispatch = useDispatch();
 
     const handleAdd = () => {
-      dispatch(
-        addIngredient({
-          ...ingredient,
-          id: `${ingredient._id}_${Date.now()}`
-        })
-      );
+      dispatch(addIngredient(ingredient));
     };
 
     return (
