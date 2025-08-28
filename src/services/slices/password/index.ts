@@ -1,4 +1,4 @@
-import { forgotPasswordApi, resetPasswordApi } from '../../../utils/burger-api';
+import { forgotPasswordApi, resetPasswordApi } from '@api';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../store';
 

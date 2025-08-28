@@ -6,7 +6,7 @@ import {
   TLoginData,
   TRegisterData,
   updateUserApi
-} from '../../../utils/burger-api';
+} from '@api';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TUser } from '../../../utils/types';
 import { deleteCookie, getCookie, setCookie } from '../../../utils/cookie';

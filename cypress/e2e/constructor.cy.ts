@@ -10,7 +10,7 @@ describe('Constructor Page', () => {
       win.localStorage.setItem('accessToken', 'fake-access-token')
       win.localStorage.setItem('refreshToken', 'fake-refresh-token')
     })
-    
+
     // Устанавливаем токен в cookie
     cy.setCookie('accessToken', 'fake-access-token')
 
@@ -29,27 +29,39 @@ describe('Constructor Page', () => {
 
   describe('Adding ingredients to constructor', () => {
     it('should add bun to constructor', () => {
+      // Проверяем, что булки нет в конструкторе
+      cy.get('[data-testid="constructor-bun"]').should('not.exist')
+
       // Добавляем булку в конструктор
       cy.get('[data-testid="ingredient-bun"]').first().find('button').click({ force: true })
 
-      // Проверяем, что булка добавлена
+      // Проверяем, что булка добавлена и это именно та булка, которую мы выбрали
       cy.get('[data-testid="constructor-bun"]').should('exist')
+      cy.get('[data-testid="constructor-bun"]').should('contain', 'Краторная булка N-200i')
     })
 
     it('should add main ingredient to constructor', () => {
+      // Проверяем, что начинки нет в конструкторе
+      cy.get('[data-testid="constructor-main"]').should('not.exist')
+
       // Добавляем начинку в конструктор
       cy.get('[data-testid="ingredient-main"]').first().find('button').click({ force: true })
 
-      // Проверяем, что начинка добавлена
+      // Проверяем, что начинка добавлена и это именно та начинка, которую мы выбрали
       cy.get('[data-testid="constructor-main"]').should('exist')
+      cy.get('[data-testid="constructor-main"]').should('contain', 'Биокотлета из марсианской Магнолии')
     })
 
     it('should add sauce to constructor', () => {
+      // Проверяем, что соуса нет в конструкторе
+      cy.get('[data-testid="constructor-sauce"]').should('not.exist')
+
       // Добавляем соус в конструктор
       cy.get('[data-testid="ingredient-sauce"]').first().find('button').click({ force: true })
 
-      // Проверяем, что соус добавлен
+      // Проверяем, что соус добавлен и это именно тот соус, который мы выбрали
       cy.get('[data-testid="constructor-sauce"]').should('exist')
+      cy.get('[data-testid="constructor-sauce"]').should('contain', 'Соус фирменный Space Sauce')
     })
   })
 
@@ -92,17 +104,23 @@ describe('Constructor Page', () => {
 
   describe('Order creation', () => {
     it('should create order successfully', () => {
+      // Проверяем, что ингредиентов нет в конструкторе
+      cy.get('[data-testid="constructor-bun"]').should('not.exist')
+      cy.get('[data-testid="constructor-main"]').should('not.exist')
+
       // Добавляем ингредиенты в конструктор
       cy.get('[data-testid="ingredient-bun"]').first().find('button').click({ force: true })
-
       cy.get('[data-testid="ingredient-main"]').first().find('button').click({ force: true })
 
       // Ждем, пока ингредиенты добавятся
       cy.wait(1000)
 
-      // Проверяем, что ингредиенты добавлены
+      // Проверяем, что ингредиенты добавлены и это именно те ингредиенты, которые мы выбрали
       cy.get('[data-testid="constructor-bun"]').should('exist')
       cy.get('[data-testid="constructor-main"]').should('exist')
+
+      cy.get('[data-testid="constructor-bun"]').should('contain', 'Краторная булка N-200i')
+      cy.get('[data-testid="constructor-main"]').should('contain', 'Биокотлета из марсианской Магнолии')
 
       // Проверяем, что кнопка "Оформить заказ" активна
       cy.get('[data-testid="order-button"]').should('not.be.disabled')
