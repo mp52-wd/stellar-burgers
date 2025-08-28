@@ -32,7 +32,7 @@ export const feedsSlice = createSlice({
       })
       .addCase(fetchFeeds.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Ошибка загрузки';
+        state.error = action.error?.message || 'Ошибка загрузки';
       });
   }
 });

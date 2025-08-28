@@ -35,7 +35,7 @@ export const ordersSlice = createSlice({
       })
       .addCase(fetchOrders.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Ошибка загрузки';
+        state.error = action.error?.message || 'Ошибка загрузки';
       });
   }
 });

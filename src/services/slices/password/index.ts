@@ -1,4 +1,4 @@
-import { forgotPasswordApi, resetPasswordApi } from '@api';
+import { forgotPasswordApi, resetPasswordApi } from '../../../utils/burger-api';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../store';
 
@@ -50,7 +50,7 @@ const passwordSlice = createSlice({
       .addCase(forgotPassword.rejected, (state, action) => {
         state.loading = false;
         state.error =
-          action.error.message || 'Ошибка отправки email для сброса пароля';
+          action.error?.message || 'Ошибка отправки email для сброса пароля';
       })
       .addCase(resetPassword.pending, (state) => {
         state.loading = true;
@@ -62,7 +62,7 @@ const passwordSlice = createSlice({
       })
       .addCase(resetPassword.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Ошибка сброса пароля';
+        state.error = action.error?.message || 'Ошибка сброса пароля';
       });
   }
 });
