@@ -1,4 +1,4 @@
-import { orderBurgerApi } from '../../../utils/burger-api';
+import { orderBurgerApi } from '@api';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TOrder } from '../../../utils/types';
 
@@ -43,7 +43,7 @@ export const newOrderSlice = createSlice({
       })
       .addCase(createOrder.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Ошибка создания заказа';
+        state.error = action.error?.message || 'Ошибка создания заказа';
       });
   }
 });
