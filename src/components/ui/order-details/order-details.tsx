@@ -13,13 +13,13 @@ export const OrderDetailsUI: React.FC<OrderDetailsUIProps> = ({
     >
       {orderNumber}
     </h2>
-    <p className='text text_type_main-medium'>идентификатор заказа</p>
+    <p className={`${styles.subtitle} text text_type_main-medium`}>идентификатор заказа</p>
     <img
       className={styles.img}
       src={doneImg}
       alt='изображение статуса заказа.'
     />
-    <p className='text text_type_main-default mb-1'>
+    <p className={`${styles.status} text text_type_main-default mb-1`}>
       Ваш заказ начали готовить
     </p>
     <p className={`${styles.text} text text_type_main-default`}>
